@@ -1,2 +1,2 @@
-# RetailManager
-Retail Manager from JJ
+# Retail Manager
+Retail Manager from *JJ*
