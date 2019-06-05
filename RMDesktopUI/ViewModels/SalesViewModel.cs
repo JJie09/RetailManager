@@ -29,7 +29,7 @@ namespace RMDesktopUI.ViewModels
             set
             {
                 _itemQuantity = value;
-                NotifyOfPropertyChange(() => Products);
+                NotifyOfPropertyChange(() => ItemQuantity);
             }
         }
         public BindingList<string> Cart
@@ -54,7 +54,6 @@ namespace RMDesktopUI.ViewModels
         {
             get { return "$0.00"; }
         }
-
 
         public bool CanAddToCart
         {
