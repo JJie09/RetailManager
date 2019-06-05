@@ -1,5 +1,6 @@
 ﻿using Caliburn.Micro;
 using RMDesktopUI.EventModels;
+using RMDesktopUI.Library.Api;
 using System;
 using System.Collections.Generic;
 using System.Linq;
