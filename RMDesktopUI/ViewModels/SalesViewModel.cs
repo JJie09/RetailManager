@@ -13,9 +13,10 @@ namespace RMDesktopUI.ViewModels
     public class SalesViewModel : Screen
     {
         private BindingList<ProductModel> _products;
-        private BindingList<string> _cart;
-        private int _itemQuantity;
-        
+        private BindingList<CartItemModel> _cart = new BindingList<CartItemModel>();
+        private ProductModel _selectedProduct;
+        private int _itemQuantity = 1;
+
         private IProductEndPoint _productEndPoint;
         public SalesViewModel(IProductEndPoint productEndPoint)
         {
@@ -34,6 +35,16 @@ namespace RMDesktopUI.ViewModels
         }
 
 
+        public ProductModel SelectedProduct
+        {
+            get { return _selectedProduct; }
+            set
+            {
+                _selectedProduct = value;
+                NotifyOfPropertyChange(() => SelectedProduct);
+                NotifyOfPropertyChange(() => CanAddToCart);
+            }
+        }
         public BindingList<ProductModel> Products
         {
             get { return _products; }
@@ -50,21 +61,26 @@ namespace RMDesktopUI.ViewModels
             {
                 _itemQuantity = value;
                 NotifyOfPropertyChange(() => ItemQuantity);
+                NotifyOfPropertyChange(() => CanAddToCart);
             }
         }
-        public BindingList<string> Cart
+        public BindingList<CartItemModel> Cart
         {
             get { return _cart; }
             set
             {
                 _cart = value;
                 NotifyOfPropertyChange(() => Cart);
+                NotifyOfPropertyChange(() => SubTotal);
             }
         }
 
         public string SubTotal
         {
-            get { return "$0.00"; }
+            get
+            {
+                return Cart.ToList().Sum(x => x.QuantityInCart * x.Product.RetailPrice).ToString("C");
+            }
         }
         public string Tax
         {
@@ -79,12 +95,31 @@ namespace RMDesktopUI.ViewModels
         {
             get
             {
-                return false;
+                return ItemQuantity > 0 && SelectedProduct?.QuantityInStock > 0 && SelectedProduct?.QuantityInStock >= ItemQuantity;
             }
         }
         public void AddToCart()
         {
-
+            CartItemModel existingItem = Cart.FirstOrDefault(x => x.Product == SelectedProduct);
+            if (existingItem != null)
+            {
+                existingItem.QuantityInCart += ItemQuantity;
+                Cart.Remove(existingItem);
+                Cart.Add(existingItem);
+            }
+            else
+            {
+                CartItemModel item = new CartItemModel()
+                {
+                    Product = SelectedProduct,
+                    QuantityInCart = ItemQuantity
+                };
+                Cart.Add(item);
+            };
+            SelectedProduct.QuantityInStock -= ItemQuantity;
+            ItemQuantity = 1;
+            NotifyOfPropertyChange(() => SubTotal);
+            NotifyOfPropertyChange(() => Cart);
         }
 
         public bool CanRemoveFromCart
@@ -96,7 +131,7 @@ namespace RMDesktopUI.ViewModels
         }
         public void RemoveFromCart()
         {
-
+            NotifyOfPropertyChange(() => SubTotal);
         }
 
         public bool CanCheckout
