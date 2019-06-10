@@ -107,13 +107,11 @@ namespace RMDesktopUI.ViewModels
         {
             decimal taxRate = _configHelper.GetTaxRate() / 100;
             decimal taxAmount = 0;
-            foreach (var item in Cart)
-            {
-                if (item.Product.IsTaxable)
-                {
-                    taxAmount += item.QuantityInCart * taxRate * item.Product.RetailPrice;
-                }
-            }
+
+            taxAmount = Cart
+                .Where(x => x.Product.IsTaxable)
+                .Sum(x => x.Product.RetailPrice * x.QuantityInCart * taxRate);
+            
             return taxAmount;
         }
 
