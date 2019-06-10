@@ -25,6 +25,7 @@ namespace RMDataManager.Library.Internal.DataAccess
                 List<T> rows = connection.Query<T>(storedProcedured, parameters, commandType: CommandType.StoredProcedure).ToList();
                 return rows;
             }
+
         }
         public void SaveData<T>(string storedProcedured, T parameters, string connectionStringName)
         {

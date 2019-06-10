@@ -8,7 +8,7 @@ using Microsoft.AspNet.Identity;
 
 namespace RMDataManager.Controllers
 {
-    [Authorize]
+    //[Authorize]
     public class ValuesController : ApiController
     {
         // GET api/values
