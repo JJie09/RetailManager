@@ -59,5 +59,15 @@ namespace RMDesktopUI.Properties {
                 resourceCulture = value;
             }
         }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Byte[].
+        /// </summary>
+        internal static byte[] password {
+            get {
+                object obj = ResourceManager.GetObject("password", resourceCulture);
+                return ((byte[])(obj));
+            }
+        }
     }
 }

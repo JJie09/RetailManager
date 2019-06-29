@@ -9,4 +9,7 @@ namespace RMDesktopUI.EventModels
     public class LogOnEvent
     {
     }
+    public class RegisterEvent
+    {
+    }
 }

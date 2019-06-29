@@ -19,7 +19,7 @@ namespace RMDesktopUI.Helpers
 
         public static string GetBoundPassword(DependencyObject d)
         {
-            var box = d as PasswordBox;
+            PasswordBox box = d as PasswordBox;
             if (box != null)
             {
                 // this funny little dance here ensures that we've hooked the

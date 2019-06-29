@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 
 namespace RMDesktopUI.ViewModels
 {
-    public class ShellViewModel : Conductor<object>, IHandle<LogOnEvent>
+    public class ShellViewModel : Conductor<object>, IHandle<LogOnEvent>, IHandle<RegisterEvent>
     {
         private SalesViewModel _salesVM;
         private IEventAggregator _events;
@@ -27,6 +27,10 @@ namespace RMDesktopUI.ViewModels
         public void Handle(LogOnEvent message)
         {
             ActivateItem(_salesVM);
+        }
+        public void Handle(RegisterEvent message)
+        {
+            ActivateItem(IoC.Get<RegisterUserViewModel>());
         }
     }
 }

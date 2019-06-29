@@ -25,7 +25,7 @@ namespace RMDataManager.Controllers
         }
 
         // POST api/values
-        public void Post([FromBody]string value)
+        public void Post(string value)
         {
         }
 

@@ -2,6 +2,7 @@
 using RMDesktopUI.EventModels;
 using RMDesktopUI.Helpers;
 using RMDesktopUI.Library.Api;
+using RMDesktopUI.Library.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -12,7 +13,7 @@ namespace RMDesktopUI.ViewModels
 {
     public class LoginViewModel : Screen
     {
-        private string _userName;
+        private string _emailAddress;
         private string _password;
         private string _errorMessage;
         private IAPIHelper _apiHelper;
@@ -22,17 +23,17 @@ namespace RMDesktopUI.ViewModels
         {
             _apiHelper = apiHelper;
             _events = events;
-            UserName = "jj@1234";
+            EmailAddress = "jj@1234";
             Password = "Pwd@12345";
         }
 
-        public string UserName
+        public string EmailAddress
         {
-            get { return _userName; }
+            get { return _emailAddress; }
             set
             {
-                _userName = value;
-                NotifyOfPropertyChange(() => UserName);
+                _emailAddress = value;
+                NotifyOfPropertyChange(() => EmailAddress);
             }
         }
         public string Password
@@ -67,7 +68,7 @@ namespace RMDesktopUI.ViewModels
             get
             {
                 bool output = false;
-                if (UserName?.Length > 0 && Password?.Length > 0)
+                if (EmailAddress?.Length > 0 && Password?.Length > 0)
                 {
                     output = true;
                 }
@@ -79,7 +80,7 @@ namespace RMDesktopUI.ViewModels
             try
             {
                 ErrorMessage = "";
-                var result = await _apiHelper.Authenticate(UserName, Password);
+                var result = await _apiHelper.Authenticate(EmailAddress, Password);
                 await _apiHelper.GetLoggedInUserInfo(result.Access_Token);
                 _events.PublishOnUIThread(new LogOnEvent());
             }
@@ -87,6 +88,10 @@ namespace RMDesktopUI.ViewModels
             {
                 ErrorMessage = ex.Message;
             }
+        }
+        public void Register()
+        {
+            _events.PublishOnUIThread(new RegisterEvent());
         }
     }
 }

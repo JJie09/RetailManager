@@ -14,6 +14,7 @@ namespace RMDesktopUI.ViewModels
     public class SalesViewModel : Screen
     {
         private IProductEndPoint _productEndPoint;
+        private ISaleEndPoint _saleEndPoint;
         private IConfigHelper _configHelper;
 
         private BindingList<ProductModel> _products;
@@ -21,9 +22,10 @@ namespace RMDesktopUI.ViewModels
         private ProductModel _selectedProduct;
         private int _itemQuantity = 1;
 
-        public SalesViewModel(IProductEndPoint productEndPoint, IConfigHelper configHelper)
+        public SalesViewModel(IProductEndPoint productEndPoint, ISaleEndPoint saleEndPoint, IConfigHelper configHelper)
         {
             _productEndPoint = productEndPoint;
+            _saleEndPoint = saleEndPoint;
             _configHelper = configHelper;
         }
 
@@ -111,7 +113,7 @@ namespace RMDesktopUI.ViewModels
             taxAmount = Cart
                 .Where(x => x.Product.IsTaxable)
                 .Sum(x => x.Product.RetailPrice * x.QuantityInCart * taxRate);
-            
+
             return taxAmount;
         }
 
@@ -146,6 +148,7 @@ namespace RMDesktopUI.ViewModels
             NotifyOfPropertyChange(() => Tax);
             NotifyOfPropertyChange(() => Total);
             NotifyOfPropertyChange(() => Cart);
+            NotifyOfPropertyChange(() => CanCheckOut);
         }
 
         public bool CanRemoveFromCart
@@ -162,16 +165,24 @@ namespace RMDesktopUI.ViewModels
             NotifyOfPropertyChange(() => Total);
         }
 
-        public bool CanCheckout
+        public bool CanCheckOut
         {
             get
             {
-                return false;
+                return Cart.Count > 0;
             }
         }
-        public void CheckOut()
+        public async void CheckOut()
         {
-
+            SaleModel sale = new SaleModel();
+            Cart.ToList().ForEach((item) =>
+            sale.SaleDetails.Add(new SaleDetailModel()
+            {
+                ProductId = item.Product.Id,
+                Quantity = item.QuantityInCart
+            }
+            ));
+            await _saleEndPoint.PostSale(sale);
         }
     }
 }

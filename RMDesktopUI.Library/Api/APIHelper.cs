@@ -1,4 +1,5 @@
-﻿using RMDesktopUI.Library.Models;
+﻿using Newtonsoft.Json;
+using RMDesktopUI.Library.Models;
 using System;
 using System.Collections.Generic;
 using System.Configuration;
@@ -84,6 +85,33 @@ namespace RMDesktopUI.Library.Api
             }
         }
 
+
+        public async Task<LoggedInUserModel> RegisterUser(LoggedInUserModel registerUser,String password)
+        {
+            var data = new FormUrlEncodedContent(new[]
+            {
+                new KeyValuePair<string, string>("Email", registerUser.EmailAddress),
+                new KeyValuePair<string, string>("Password", password),
+                new KeyValuePair<string, string>("ConfirmPassword", password),
+                new KeyValuePair<string, string>("FirstName", registerUser.FirstName),
+                new KeyValuePair<string, string>("LastName", registerUser.LastName)
+            });
+
+            using (HttpResponseMessage response = await _apiClient.PostAsync("/api/user/register", data))
+            {
+                if (response.IsSuccessStatusCode)
+                {
+                    var res = await response.Content.ReadAsStringAsync();
+                    LoggedInUserModel loggedInUser = JsonConvert.DeserializeObject<LoggedInUserModel>(res);
+                    var result = await response.Content.ReadAsAsync<LoggedInUserModel>();
+                    return result;
+                }
+                else
+                {
+                    throw new Exception(response.ReasonPhrase);
+                }
+            }
+        }
 
     }
 }
