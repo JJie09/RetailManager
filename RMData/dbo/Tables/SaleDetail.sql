@@ -1,7 +1,7 @@
 ﻿CREATE TABLE [dbo].[SaleDetail]
 (
 	[Id] INT NOT NULL PRIMARY KEY IDENTITY, 
-    [SaleId] NVARCHAR(128) NOT NULL, 
+    [SaleId] INT NOT NULL, 
     [ProductId] INT NOT NULL, 
     [Quantity] INT NOT NULL DEFAULT 1,
     [PurchasePrice] MONEY NOT NULL, 
