@@ -1,8 +1,10 @@
-﻿using Caliburn.Micro;
+﻿using AutoMapper;
+using Caliburn.Micro;
 using RMDesktopUI.Helpers;
 using RMDesktopUI.Library.Api;
 using RMDesktopUI.Library.Helpers;
 using RMDesktopUI.Library.Models;
+using RMDesktopUI.Models;
 using RMDesktopUI.ViewModels;
 using System;
 using System.Collections.Generic;
@@ -24,9 +26,20 @@ namespace RMDesktopUI
             ConventionManager.AddElementConvention<PasswordBox>(PasswordBoxHelper.BoundPasswordProperty, "Password", "PasswordChanged");
             ConventionManager.AddElementConvention<PasswordBox>(PasswordBoxHelper.BoundPasswordProperty, "ConfirmPassword", "PasswordChanged");
         }
+        private IMapper ConfigureAutoMapper()
+        {
+            var config = new MapperConfiguration(cfg =>
+            {
+                cfg.CreateMap<ProductModel, ProductDisplayModel>();
+                cfg.CreateMap<CartItemDisplayModel, CartItemDisplayModel>();
+            });
 
+           return config.CreateMapper();
+        }
         protected override void Configure()
         {
+            _container.Instance(ConfigureAutoMapper());
+
             _container.Instance(_container)
                 .PerRequest<IProductEndPoint, ProductEndPoint>()
                 .PerRequest<ISaleEndPoint, SaleEndPoint>();
