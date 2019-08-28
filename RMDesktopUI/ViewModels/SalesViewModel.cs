@@ -23,6 +23,7 @@ namespace RMDesktopUI.ViewModels
         private BindingList<ProductDisplayModel> _products;
         private BindingList<CartItemDisplayModel> _cart = new BindingList<CartItemDisplayModel>();
         private ProductDisplayModel _selectedProduct;
+        private CartItemDisplayModel _selectedCartItem;
         private int _itemQuantity = 1;
 
         public SalesViewModel(IProductEndPoint productEndPoint, ISaleEndPoint saleEndPoint, IConfigHelper configHelper, IMapper mapper)
@@ -36,7 +37,7 @@ namespace RMDesktopUI.ViewModels
         protected override async void OnViewLoaded(object view)
         {
             base.OnViewLoaded(view);
-            await LoadProducts();   
+            await LoadProducts();
         }
         private async Task LoadProducts()
         {
@@ -72,6 +73,16 @@ namespace RMDesktopUI.ViewModels
                 _itemQuantity = value;
                 NotifyOfPropertyChange(() => ItemQuantity);
                 NotifyOfPropertyChange(() => CanAddToCart);
+            }
+        }
+        public CartItemDisplayModel SelectedCartItem
+        {
+            get { return _selectedCartItem; }
+            set
+            {
+                _selectedCartItem = value;
+                NotifyOfPropertyChange(() => SelectedCartItem);
+                NotifyOfPropertyChange(() => CanRemoveFromCart);
             }
         }
         public BindingList<CartItemDisplayModel> Cart
@@ -158,11 +169,20 @@ namespace RMDesktopUI.ViewModels
         {
             get
             {
-                return false;
+                return SelectedCartItem != null && SelectedCartItem?.Product.QuantityInStock>0;
             }
         }
         public void RemoveFromCart()
         {
+            SelectedCartItem.Product.QuantityInStock += 1;
+            if (SelectedCartItem.QuantityInCart > 1)
+            {
+                SelectedCartItem.QuantityInCart -= 1;
+            }
+            else
+            {
+                Cart.Remove(SelectedCartItem);
+            }
             NotifyOfPropertyChange(() => SubTotal);
             NotifyOfPropertyChange(() => Tax);
             NotifyOfPropertyChange(() => Total);
