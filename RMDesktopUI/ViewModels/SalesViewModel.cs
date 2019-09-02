@@ -45,7 +45,16 @@ namespace RMDesktopUI.ViewModels
             var products = _mapper.Map<List<ProductDisplayModel>>(productList);
             Products = new BindingList<ProductDisplayModel>(products);
         }
-
+        private async Task ResetSalesViewModel()
+        {
+            Cart = new BindingList<CartItemDisplayModel>();
+            await LoadProducts();
+            NotifyOfPropertyChange(() => SubTotal);
+            NotifyOfPropertyChange(() => Tax);
+            NotifyOfPropertyChange(() => Total);
+            NotifyOfPropertyChange(() => CanAddToCart);
+            NotifyOfPropertyChange(() => CanCheckOut);
+        }
         public ProductDisplayModel SelectedProduct
         {
             get { return _selectedProduct; }
@@ -169,10 +178,10 @@ namespace RMDesktopUI.ViewModels
         {
             get
             {
-                return SelectedCartItem != null && SelectedCartItem?.Product.QuantityInStock>0;
+                return SelectedCartItem != null && SelectedCartItem?.QuantityInCart>0;
             }
         }
-        public void RemoveFromCart()
+          public void RemoveFromCart()
         {
             SelectedCartItem.Product.QuantityInStock += 1;
             if (SelectedCartItem.QuantityInCart > 1)
@@ -186,6 +195,7 @@ namespace RMDesktopUI.ViewModels
             NotifyOfPropertyChange(() => SubTotal);
             NotifyOfPropertyChange(() => Tax);
             NotifyOfPropertyChange(() => Total);
+            NotifyOfPropertyChange(() => CanAddToCart);
         }
 
         public bool CanCheckOut
@@ -195,7 +205,7 @@ namespace RMDesktopUI.ViewModels
                 return Cart.Count > 0;
             }
         }
-        public async void CheckOut()
+        public async Task CheckOut()
         {
             SaleModel sale = new SaleModel();
             Cart.ToList().ForEach((item) =>
@@ -206,6 +216,8 @@ namespace RMDesktopUI.ViewModels
             }
             ));
             await _saleEndPoint.PostSale(sale);
+
+            await ResetSalesViewModel();
         }
     }
 }
