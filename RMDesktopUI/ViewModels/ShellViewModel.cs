@@ -15,17 +15,17 @@ namespace RMDesktopUI.ViewModels
         private SalesViewModel _salesVM;
         private IEventAggregator _events;
         private ILoggedInUserModel _user;
-
+        private IAPIHelper _apiHelper;
         public bool IsLoggedIn
         {
             get { return !String.IsNullOrWhiteSpace(_user.Token); }
         }
 
-        public ShellViewModel(SalesViewModel salesVM, IEventAggregator events, ILoggedInUserModel user)
+        public ShellViewModel(SalesViewModel salesVM, IEventAggregator events, ILoggedInUserModel user, IAPIHelper apiHelper)
         {
             _salesVM = salesVM;
             _user = user;
-
+            _apiHelper = apiHelper;
             _events = events;
             _events.Subscribe(this);
 
@@ -37,7 +37,8 @@ namespace RMDesktopUI.ViewModels
         }
         public void Logout()
         {
-            _user.LogOffUser();
+            _user.ResetUser();
+            _apiHelper.LogOffUser();
             ActivateItem(IoC.Get<LoginViewModel>());
             NotifyOfPropertyChange(() => IsLoggedIn);
         }

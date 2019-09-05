@@ -11,5 +11,6 @@ namespace RMDesktopUI.Library.Api
         Task GetLoggedInUserInfo(string token);
         Task<LoggedInUserModel> RegisterUser(LoggedInUserModel registerUser, string password);
 
+        void LogOffUser();
     }
 }
