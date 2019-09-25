@@ -31,7 +31,7 @@ namespace RMDataManager
                 RequiredLength = 6,
                 RequireNonLetterOrDigit = false,
                 RequireDigit = true,
-                RequireLowercase = true,
+                RequireLowercase = false,
                 RequireUppercase = false,
             };
             var dataProtectionProvider = options.DataProtectionProvider;

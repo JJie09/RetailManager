@@ -178,10 +178,10 @@ namespace RMDesktopUI.ViewModels
         {
             get
             {
-                return SelectedCartItem != null && SelectedCartItem?.QuantityInCart>0;
+                return SelectedCartItem != null && SelectedCartItem?.QuantityInCart > 0;
             }
         }
-          public void RemoveFromCart()
+        public void RemoveFromCart()
         {
             SelectedCartItem.Product.QuantityInStock += 1;
             if (SelectedCartItem.QuantityInCart > 1)

@@ -44,7 +44,7 @@ namespace RMDesktopUI.Library.Api
                 new KeyValuePair<string, string>("password", password)
             });
 
-            using (HttpResponseMessage response = await _apiClient.PostAsync("/Token", data))
+            using (HttpResponseMessage response = await _apiClient.PostAsync("Token", data))
             {
                 if (response.IsSuccessStatusCode)
                 {
@@ -70,7 +70,7 @@ namespace RMDesktopUI.Library.Api
             _apiClient.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
             _apiClient.DefaultRequestHeaders.Add("Authorization", $"Bearer {token}");
 
-            using (HttpResponseMessage response = await _apiClient.GetAsync("/api/User"))
+            using (HttpResponseMessage response = await _apiClient.GetAsync("api/User"))
             {
                 if (response.IsSuccessStatusCode)
                 {
@@ -102,7 +102,7 @@ namespace RMDesktopUI.Library.Api
                 new KeyValuePair<string, string>("LastName", registerUser.LastName)
             });
 
-            using (HttpResponseMessage response = await _apiClient.PostAsync("/api/user/register", data))
+            using (HttpResponseMessage response = await _apiClient.PostAsync("api/user/register", data))
             {
                 if (response.IsSuccessStatusCode)
                 {
