@@ -31,6 +31,10 @@ namespace RMDesktopUI.ViewModels
 
             ActivateItem(IoC.Get<LoginViewModel>());
         }
+        public void UserManagement()
+        {
+            ActivateItem(IoC.Get<UserDisplayViewModel>());
+        }
         public void ExitApplication()
         {
             TryClose();

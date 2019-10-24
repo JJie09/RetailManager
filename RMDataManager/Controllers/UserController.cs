@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNet.Identity;
+using Microsoft.AspNet.Identity.EntityFramework;
 using Microsoft.AspNet.Identity.Owin;
 using Microsoft.Owin.Security;
 using Newtonsoft.Json;
@@ -56,6 +57,38 @@ namespace RMDataManager.Controllers
 
             return data.GetUserById(userId);
         }
+
+        [Authorize(Roles = "Admin")]
+        [HttpGet]
+        [Route("Admin/GetAllUsers")]
+        public List<ApplicationUserModel> GetAllUsers()
+        {
+            List<ApplicationUserModel> output = new List<ApplicationUserModel>();
+            using (var context = new ApplicationDbContext())
+            {
+                var userStore = new UserStore<ApplicationUser>(context);
+                var userManager = new UserManager<ApplicationUser>(userStore);
+
+                var users = userManager.Users.ToList();
+                var roles = context.Roles.ToList();
+
+                users.ForEach(user =>
+                {
+                    ApplicationUserModel userModel = new ApplicationUserModel()
+                    {
+                        Id = user.Id,
+                        Email = user.Email,
+                    };
+                    user.Roles.ToList().ForEach(role =>
+                    {
+                        userModel.Roles.Add(role.RoleId, roles.Where(x => x.Id == role.RoleId).First().Name);
+                    });
+                    output.Add(userModel);
+                });
+            }
+            return output;
+        }
+
 
         [HttpPost]
         [AllowAnonymous]
